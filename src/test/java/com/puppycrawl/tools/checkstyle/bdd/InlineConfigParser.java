@@ -219,6 +219,25 @@ public final class InlineConfigParser {
         return testInputConfigBuilder.build();
     }
 
+    public static List<TestInputViolation> getViolationsFromInputFile(String inputFilePath)
+            throws Exception {
+        final TestInputConfiguration.Builder testInputConfigBuilder =
+                new TestInputConfiguration.Builder();
+        final Path filePath = Paths.get(inputFilePath);
+        final List<String> lines = readFile(filePath);
+
+        try {
+            for (int lineNo = 0; lineNo < lines.size(); lineNo++) {
+                setViolations(testInputConfigBuilder, lines, false, lineNo, true);
+            }
+        }
+        catch (CheckstyleException ex) {
+            throw new CheckstyleException(ex.getMessage() + " in " + inputFilePath, ex);
+        }
+
+        return testInputConfigBuilder.build().getViolations();
+    }
+
     public static TestInputConfiguration parseWithFilteredViolations(String inputFilePath)
             throws Exception {
         return parse(inputFilePath, true);
@@ -368,6 +387,10 @@ public final class InlineConfigParser {
                 "com.puppycrawl.tools.checkstyle.checks.javadoc.SummaryJavadocCheck");
         moduleMappings.put("LineLength",
                 "com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck");
+        moduleMappings.put("ParameterName",
+                "com.puppycrawl.tools.checkstyle.checks.naming.ParameterNameCheck");
+        moduleMappings.put("MethodName",
+                "com.puppycrawl.tools.checkstyle.checks.naming.MethodNameCheck");
 
         String fullyQualifiedClassName;
         if (moduleMappings.containsKey(moduleName)) {
@@ -677,7 +700,7 @@ public final class InlineConfigParser {
         for (int index = 1; index <= expectedMessageCount; index++) {
             final String lineWithMessage = lines.get(lineNo + index);
             final Matcher messageMatcher = VIOLATION_MESSAGE_PATTERN.matcher(lineWithMessage);
-            if (messageMatcher.matches()) {
+            if (messageMatcher.find()) {
                 final String violationMessage = messageMatcher.group(1);
                 results.add(new TestInputViolation(violationLineNum, violationMessage));
             }

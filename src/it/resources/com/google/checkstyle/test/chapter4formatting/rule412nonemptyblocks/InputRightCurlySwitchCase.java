@@ -9,14 +9,14 @@ public class InputRightCurlySwitchCase {
                 int x = 1;
                 break;
             default :
-                x = 0; } // warn
+                x = 0; } // violation ''}' at column 24 should be alone on a line.'
     }
 
     public static void method1() {
         int mode = 0;
         switch (mode) {
         default :
-               int x = 0; } // warn
+               int x = 0; } // violation ''}' at column 27 should be alone on a line.'
     }
 
     public static void method2() {
@@ -27,7 +27,7 @@ public class InputRightCurlySwitchCase {
                 break;
             default:
                 x = 0;
-        } // ok
+        }
     }
 
     public static void method3() {
@@ -35,7 +35,7 @@ public class InputRightCurlySwitchCase {
         switch (mode) {
         default :
                int x = 0;
-        } // ok
+        }
     }
 
     public static void method4() {
@@ -45,6 +45,6 @@ public class InputRightCurlySwitchCase {
                 int  y = 2;
             default :
                int x = 0;
-        } // ok
+        }
     }
 }
