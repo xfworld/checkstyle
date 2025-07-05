@@ -515,7 +515,7 @@ compile-test-resources)
   -Dcheckstyle.skipCompileInputResources=false -Dmaven.compiler.release=17
   ;;
 
-javac11)
+javac17_standard)
   # InputCustomImportOrderNoPackage2 - nothing is required in front of first import
   # InputIllegalTypePackageClassName - bad import for testing
   # InputVisibilityModifierPackageClassName - bad import for testing
@@ -525,11 +525,12 @@ javac11)
         --exclude='InputVisibilityModifierPackageClassName.java' \
         '// non-compiled (syntax|with javac|with eclipse)?\:' \
         src/test/resources-noncompilable \
+        src/it/resources-noncompilable \
         src/xdocs-examples/resources-noncompilable))
   mkdir -p target
   for file in "${files[@]}"
   do
-    echo "${file}"
+    echo "Compiling ${file} with standard JDK17"
     javac -d target "${file}"
   done
   ;;
@@ -537,6 +538,7 @@ javac11)
 javac17)
   files=($(grep -Rl --include='*.java' ': Compilable with Java17' \
         src/test/resources-noncompilable \
+        src/it/resources-noncompilable \
         src/xdocs-examples/resources-noncompilable || true))
   if [[  ${#files[@]} -eq 0 ]]; then
     echo "No Java17 files to process"
@@ -552,6 +554,7 @@ javac17)
 javac19)
   files=($(grep -Rl --include='*.java' ': Compilable with Java19' \
         src/test/resources-noncompilable \
+        src/it/resources-noncompilable \
         src/xdocs-examples/resources-noncompilable || true))
   if [[  ${#files[@]} -eq 0 ]]; then
     echo "No Java19 files to process"
@@ -567,6 +570,7 @@ javac19)
 javac20)
   files=($(grep -Rl --include='*.java' ': Compilable with Java20' \
         src/test/resources-noncompilable \
+        src/it/resources-noncompilable \
         src/xdocs-examples/resources-noncompilable || true))
   if [[  ${#files[@]} -eq 0 ]]; then
     echo "No Java20 files to process"
@@ -582,6 +586,7 @@ javac20)
 javac21)
   files=($(grep -Rl --include='*.java' ': Compilable with Java21' \
         src/test/resources-noncompilable \
+        src/it/resources-noncompilable \
         src/xdocs-examples/resources-noncompilable || true))
   if [[  ${#files[@]} -eq 0 ]]; then
     echo "No Java21 files to process"
