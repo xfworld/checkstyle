@@ -15,12 +15,12 @@ NOT_FOUND_CONTENT=$(grep -e '^  .*/Input' "${BASH_SOURCE}" \
 if [[ $(echo -n "$NOT_FOUND_CONTENT" | wc --chars) -eq 0 ]]; then
   echo "Excluded Input files matches to InputFormatted files."
 else
-  echo "not fount matches: $NOT_FOUND_CONTENT"
+  echo "not found matches: $NOT_FOUND_CONTENT"
   exit 1
 fi
 
 echo "Formatting all Input files file at src/it/resources/com/google/checkstyle/test :"
-INPUT_PATHS=($(find src/it/resources/com/google/checkstyle/test/ -name "Input*.java" \
+COMPILABLE_INPUT_PATHS=($(find src/it/resources/com/google/checkstyle/test/ -name "Input*.java" \
     | sed "s|src/it/resources/com/google/checkstyle/test/||" \
     | grep -v "rule231filetab/InputWhitespaceCharacters.java" \
     | grep -v "rule3sourcefile/InputSourceFileStructure.java" \
@@ -54,6 +54,7 @@ INPUT_PATHS=($(find src/it/resources/com/google/checkstyle/test/ -name "Input*.j
     | grep -v "rule451wheretobreak/InputSeparatorWrapEllipsis.java" \
     | grep -v "rule451wheretobreak/InputSeparatorWrapArrayDeclarator.java" \
     | grep -v "rule451wheretobreak/InputLambdaBodyWrap.java" \
+    | grep -v "rule451wheretobreak/InputIllegalLineBreakAroundLambda.java" \
     | grep -v "rule452indentcontinuationlines/ClassWithChainedMethods.java" \
     | grep -v "rule461verticalwhitespace/InputVerticalWhitespace.java" \
     | grep -v "rule462horizontalwhitespace/InputWhitespaceAroundBasic.java" \
@@ -67,6 +68,7 @@ INPUT_PATHS=($(find src/it/resources/com/google/checkstyle/test/ -name "Input*.j
     | grep -v "rule462horizontalwhitespace/InputMethodParamPad.java" \
     | grep -v "rule462horizontalwhitespace/InputWhitespaceAroundGenerics.java" \
     | grep -v "rule462horizontalwhitespace/InputGenericWhitespace.java" \
+    | grep -v "rule462horizontalwhitespace/InputWhitespaceAfterDoubleSlashes.java" \
     | grep -v "rule4821onevariableperline/InputOneVariablePerDeclaration.java" \
     | grep -v "rule4841indentation/InputClassWithChainedMethods.java" \
     | grep -v "rule4841indentation/InputAnnotationArrayInitMultiline.java" \
@@ -80,6 +82,8 @@ INPUT_PATHS=($(find src/it/resources/com/google/checkstyle/test/ -name "Input*.j
     | grep -v "rule4861blockcommentstyle/InputCommentsIndentationInSwitchBlock.java" \
     | grep -v "rule4861blockcommentstyle/InputCommentsIndentationSurroundingCode.java" \
     | grep -v "rule487modifiers/InputModifierOrder.java" \
+    | grep -v "rule489textblocks/InputTextBlocksGeneralForm.java" \
+    | grep -v "rule489textblocks/InputTextBlocksIndentation.java" \
     | grep -v "rule522classnames/InputClassNames.java" \
     | grep -v "rule53camelcase/InputCamelCaseDefined.java" \
     | grep -v "rule711generalform/InputSingleLineJavadocAndInvalidJavadocPosition.java" \
@@ -89,6 +93,26 @@ INPUT_PATHS=($(find src/it/resources/com/google/checkstyle/test/ -name "Input*.j
     | grep -v "rule734nonrequiredjavadoc/InputInvalidJavadocPosition.java" \
     ))
 
-for INPUT_PATH in "${INPUT_PATHS[@]}"; do
+for INPUT_PATH in "${COMPILABLE_INPUT_PATHS[@]}"; do
   java -jar "$JAR_PATH" --replace src/it/resources/com/google/checkstyle/test/"$INPUT_PATH"
+done
+
+echo "Formatting all Non-compilable Input files file at src/it/resources-noncompilable/com/google/checkstyle/test :"
+NON_COMPILABLE_INPUT_PATHS=($(find src/it/resources-noncompilable/com/google/checkstyle/test/ -name "Input*.java" \
+    | sed "s|src/it/resources-noncompilable/com/google/checkstyle/test/||" \
+    | grep -v "rule43onestatement/InputOneStatementPerLine.java" \
+    | grep -v "rule462horizontalwhitespace/InputWhitespaceAroundArrow.java" \
+    | grep -v "rule462horizontalwhitespace/InputWhitespaceAroundWhen.java" \
+    | grep -v "rule4841indentation/InputLambdaChild.java" \
+    | grep -v "rule4841indentation/InputSwitchOnStartOfTheLine.java" \
+    | grep -v "rule4841indentation/InputCatchParametersOnNewLine.java" \
+    | grep -v "rule4841indentation/InputLambdaAndChildOnTheSameLine.java" \
+    | grep -v "rule4841indentation/InputSingleSwitchStatementWithoutCurly.java" \
+    | grep -v "rule4841indentation/InputSwitchWrappingIndentation.java" \
+    | grep -v "rule526parameternames/InputRecordComponentName.java" \
+    | grep -v "rule527localvariablenames/InputPatternVariableNameEnhancedInstanceofTestDefault.java" \
+    ))
+
+for INPUT_PATH in "${NON_COMPILABLE_INPUT_PATHS[@]}"; do
+  java -jar "$JAR_PATH" --replace src/it/resources-noncompilable/com/google/checkstyle/test/"$INPUT_PATH"
 done

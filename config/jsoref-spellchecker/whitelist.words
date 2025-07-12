@@ -308,14 +308,12 @@ detailast
 detailnodetreestringprinter
 devops
 Dexec
-Dexpression
 dfa
 DFFF
 Dfile
 dfn
 Dfoo
 Dforbiddenapis
-Dforce
 Dgpg
 Dhttp
 Diachenko
@@ -325,6 +323,7 @@ Djacoco
 Dlinkcheck
 DMail
 Dmaven
+DMC
 Dnew
 doccheck
 Dockter
@@ -872,7 +871,6 @@ mozilla
 MRELEASE
 mstudman
 MTAGLIST
-mtime
 multicharacter
 multifileregexpheader
 multiline
@@ -1022,7 +1020,7 @@ ORELSEGET
 orm
 Osgi
 oss
-osx
+OSX
 otechie
 outertypefilename
 outertypenumber
@@ -1099,7 +1097,6 @@ POJO
 Popup
 Postgresql
 powershell
-ppc
 prebuilts
 prefs
 PRESIZE
@@ -1358,6 +1355,7 @@ technotes
 temurin
 Testik
 testmodules
+textblocks
 textlevel
 tfij
 Tfo

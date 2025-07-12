@@ -1,4 +1,5 @@
 #!/bin/bash
+
 set -e
 
 source ./.ci/util.sh
@@ -110,7 +111,6 @@ nondex)
   ;;
 
 pr-age)
-  # Travis merges the PR commit into origin/master
   # This command undoes that to work with the original branch
   # if it notices a merge commit
   if git show --summary HEAD | grep ^Merge: ;
@@ -188,7 +188,6 @@ test-al)
   ;;
 
 versions)
-  if [ -v TRAVIS_EVENT_TYPE ] && [ "$TRAVIS_EVENT_TYPE" != "cron" ] ; then exit 0; fi
   ./mvnw -e --no-transfer-progress clean versions:dependency-updates-report \
     versions:plugin-updates-report
   if [ "$(grep "<nextVersion>" target/*-updates-report.xml | cat | wc -l)" -gt 0 ]; then
@@ -465,7 +464,6 @@ assembly-run-all-jar)
   ;;
 
 check-since-version)
-  # Travis merges the PR commit into origin/master
   # This identifies the PR's original commit
   # if it notices a merge commit
   HEAD=$(git rev-parse HEAD)
@@ -515,7 +513,7 @@ compile-test-resources)
   -Dcheckstyle.skipCompileInputResources=false -Dmaven.compiler.release=17
   ;;
 
-javac11)
+javac17_standard)
   # InputCustomImportOrderNoPackage2 - nothing is required in front of first import
   # InputIllegalTypePackageClassName - bad import for testing
   # InputVisibilityModifierPackageClassName - bad import for testing
@@ -525,11 +523,12 @@ javac11)
         --exclude='InputVisibilityModifierPackageClassName.java' \
         '// non-compiled (syntax|with javac|with eclipse)?\:' \
         src/test/resources-noncompilable \
+        src/it/resources-noncompilable \
         src/xdocs-examples/resources-noncompilable))
   mkdir -p target
   for file in "${files[@]}"
   do
-    echo "${file}"
+    echo "Compiling ${file} with standard JDK17"
     javac -d target "${file}"
   done
   ;;
@@ -537,7 +536,9 @@ javac11)
 javac17)
   files=($(grep -Rl --include='*.java' ': Compilable with Java17' \
         src/test/resources-noncompilable \
-        src/xdocs-examples/resources-noncompilable || true))
+        src/it/resources-noncompilable \
+        src/xdocs-examples/resources-noncompilable \
+        | grep -v 'importorder/' || true))
   if [[  ${#files[@]} -eq 0 ]]; then
     echo "No Java17 files to process"
   else
@@ -552,6 +553,7 @@ javac17)
 javac19)
   files=($(grep -Rl --include='*.java' ': Compilable with Java19' \
         src/test/resources-noncompilable \
+        src/it/resources-noncompilable \
         src/xdocs-examples/resources-noncompilable || true))
   if [[  ${#files[@]} -eq 0 ]]; then
     echo "No Java19 files to process"
@@ -567,6 +569,7 @@ javac19)
 javac20)
   files=($(grep -Rl --include='*.java' ': Compilable with Java20' \
         src/test/resources-noncompilable \
+        src/it/resources-noncompilable \
         src/xdocs-examples/resources-noncompilable || true))
   if [[  ${#files[@]} -eq 0 ]]; then
     echo "No Java20 files to process"
@@ -582,6 +585,7 @@ javac20)
 javac21)
   files=($(grep -Rl --include='*.java' ': Compilable with Java21' \
         src/test/resources-noncompilable \
+        src/it/resources-noncompilable \
         src/xdocs-examples/resources-noncompilable || true))
   if [[  ${#files[@]} -eq 0 ]]; then
     echo "No Java21 files to process"

@@ -1,31 +1,49 @@
+// non-compiled with javac: Compilable with Java21
+
 package com.google.checkstyle.test.chapter4formatting.rule42blockindentation;
 
 import java.util.List;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
-/**some javadoc.*/
+/** some javadoc. */
 public class InputLambdaChildCorrect {
   String testMethod1(List<Integer> operations) {
     return operations.stream()
         .map(
-                op ->
-                    switch (op) {
-                      case 1 -> "test";
-                      default -> "TEST";
-                    })
-        .findFirst().orElse("defaultValue");
+            op ->
+                switch (op) {
+                  case 1 -> "test";
+                  default -> "TEST";
+                })
+        .findFirst()
+        .orElse("defaultValue");
   }
 
-
   void main(String[] args) {
-    group((Function<Integer, Integer>) x -> switch (x) { default: yield x; },
-          (Function<Integer, Integer>) x -> switch (x) { default: yield x; });
+    group(
+        (Function<Integer, Integer>)
+            x ->
+                switch (x) {
+                  default:
+                    yield x;
+                },
+        (Function<Integer, Integer>)
+            x ->
+                switch (x) {
+                  default:
+                    yield x;
+                });
   }
 
   List<String> getThrowsTrees(Object input) {
-    return getBlockTags(input,
-        kind -> switch (kind) { case "EXCEPTION", "THROWS" -> true; default -> false; },
+    return getBlockTags(
+        input,
+        kind ->
+            switch (kind) {
+              case "EXCEPTION", "THROWS" -> true;
+              default -> false;
+            },
         String.class);
   }
 
